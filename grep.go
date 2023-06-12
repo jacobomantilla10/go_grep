@@ -3,36 +3,29 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func search(s string, fName string) {
-	fmt.Println(s, fName)
-
 	file, err := os.ReadFile(fName)
 
 	if err != nil {
 		panic(err)
 	}
 
-	//fmt.Println(string(file))
-	//fmt.Println("file bytes: ", file, "string bytes: ", []byte(s))
-	num := getNumOccurrences([]byte(s), file)
-	fmt.Println(num)
+	output := formatOutput(s, strings.Split(string(file), " "))
+	fmt.Println(output)
 }
 
-func getNumOccurrences(s []byte, f []byte) int {
-	numOccurrences := 0
-	j := 0
+func formatOutput(s string, f []string) string {
+	output := []string{}
 
 	for _, val := range f {
-		if j >= len(s) {
-			numOccurrences++
-			j = 0
-		}
-
-		if val == s[j] {
-			j++
+		if val == s {
+			output = append(output, "\033[31m", val, "\033[0m")
+		} else {
+			output = append(output, val)
 		}
 	}
-	return numOccurrences
+	return strings.Join(output, " ")
 }
