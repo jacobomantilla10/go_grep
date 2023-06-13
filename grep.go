@@ -1,27 +1,39 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"regexp"
 )
 
 func search(s string, fName string) {
-	file, err := os.ReadFile(fName)
-
-	if err != nil {
-		panic(err)
-	}
-
-	output := searchFile(s, file)
+	output := searchFile(s, fName)
 	fmt.Println(output)
 }
 
-func searchFile(s string, f []byte) string {
+func searchFile(s string, f string) string {
+	file, err := os.Open(f)
+
+	if err != nil {
+		panic(1)
+	}
+
+	scanner := bufio.NewScanner(file)
+
+	scanner.Split(bufio.ScanLines)
+
+	output := ""
+	replacement := "\x1b[31m" + s + "\x1b[0m"
 	re, _ := regexp.Compile(s)
 
-	replacement := "\x1b[31m" + s + "\x1b[0m"
-	outputBytes := re.ReplaceAllString(string(f), replacement)
+	for scanner.Scan() {
+		if re.MatchString(scanner.Text()) {
+			output += re.ReplaceAllString(scanner.Text(), replacement) + "\n"
+		}
+	}
 
-	return outputBytes
+	//outputBytes := re.ReplaceAllString(string(f), replacement)
+
+	return output
 }
