@@ -3,20 +3,64 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io/fs"
 	"os"
 	"regexp"
 )
 
 func search(s string, fName string) {
-	output := searchFile(s, fName)
-	fmt.Println(output)
+	//output := searchFile(s, fName, false)
+	//fmt.Println(output)
+	findFile(fName)
 }
 
-func searchFile(s string, f string) string {
-	file, err := os.Open(f)
+func findFile(f string) {
+	// Check every file in the current directory
+	// Iterate through all subdirectories, while checking every file in each subdirectory
+	// Do the above step recursively
+	wd, err := os.Getwd()
 
 	if err != nil {
 		panic(1)
+	}
+
+	fileSystem := os.DirFS(wd)
+	fmt.Println(fileSystem)
+
+	output := ""
+	// Need to fix the way this is called, this works right now for testing purposes
+	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if d.Name() == "grep" {
+			return nil
+		}
+
+		output += searchFile("Linux", d.Name(), d.IsDir())
+
+		if output != "" {
+			output += "\n"
+		}
+		//fmt.Println("Linux", d.Name(), d.IsDir())
+
+		return nil
+	})
+
+	fmt.Println(output)
+}
+
+func searchFile(s string, f string, isDir bool) string {
+	if isDir {
+		return ""
+	}
+
+	file, err := os.Open(f)
+
+	if err != nil {
+		//panic(1)
+		return ""
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -33,7 +77,7 @@ func searchFile(s string, f string) string {
 		}
 	}
 
-	//outputBytes := re.ReplaceAllString(string(f), replacement)
+	file.Close()
 
 	return output
 }
