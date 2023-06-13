@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"regexp"
 )
 
 func search(s string, fName string) {
@@ -13,19 +13,15 @@ func search(s string, fName string) {
 		panic(err)
 	}
 
-	output := formatOutput(s, strings.Split(string(file), " "))
+	output := searchFile(s, file)
 	fmt.Println(output)
 }
 
-func formatOutput(s string, f []string) string {
-	output := []string{}
+func searchFile(s string, f []byte) string {
+	re, _ := regexp.Compile(s)
 
-	for _, val := range f {
-		if val == s {
-			output = append(output, "\033[31m", val, "\033[0m")
-		} else {
-			output = append(output, val)
-		}
-	}
-	return strings.Join(output, " ")
+	replacement := "\x1b[31m" + s + "\x1b[0m"
+	outputBytes := re.ReplaceAllString(string(f), replacement)
+
+	return outputBytes
 }
