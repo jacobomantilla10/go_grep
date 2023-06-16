@@ -1,0 +1,12 @@
+1. Add ability to pass file not only as filename but as filepath in case we want to search in another directory
+2. Add "-r" flag in order to search for a string or regex in current directory or all subdirectories
+3. Add "-i" flag in order to ignore case sensitivity
+4. Add "c" flag in order to count the total number of lines where the string pattern appears or resides
+5. Add "-v" flag in order to invert output -- that is, return all the lines where the expression was not found
+6. Add "-n" flag in order to number the lines where the string pattern is matched
+7. Add "-w" flag in order to search for the line containing the exact matching word as shown
+8. Add "-x" flag in order to force pattern to match only whole lines
+9. Add "-m" flag in order to force the search to stop after NUM selected lines
+10. Add "-H" flag in order to print file name with output lines
+11. Add "h" flag in order to suppress the file name prefix on output
+

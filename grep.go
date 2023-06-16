@@ -8,27 +8,20 @@ import (
 	"regexp"
 )
 
-func search(s string, fName string) {
-	//output := searchFile(s, fName, false)
-	//fmt.Println(output)
-	findFile(fName)
-}
+func searchRecursively(s string, d string) {
+	var dir string
 
-func findFile(f string) {
-	// Check every file in the current directory
-	// Iterate through all subdirectories, while checking every file in each subdirectory
-	// Do the above step recursively
-	wd, err := os.Getwd()
-
-	if err != nil {
-		panic(1)
+	if d == "." {
+		dir, _ = os.Getwd()
+	} else {
+		dir = d
 	}
 
-	fileSystem := os.DirFS(wd)
+	fileSystem := os.DirFS(dir)
 	fmt.Println(fileSystem)
 
 	output := ""
-	// Need to fix the way this is called, this works right now for testing purposes
+
 	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			fmt.Println(err)
@@ -38,12 +31,15 @@ func findFile(f string) {
 			return nil
 		}
 
-		output += searchFile("Linux", d.Name(), d.IsDir())
+		if d.IsDir() {
+			return nil
+		}
+
+		output += searchFile(s, d.Name())
 
 		if output != "" {
 			output += "\n"
 		}
-		//fmt.Println("Linux", d.Name(), d.IsDir())
 
 		return nil
 	})
@@ -51,15 +47,10 @@ func findFile(f string) {
 	fmt.Println(output)
 }
 
-func searchFile(s string, f string, isDir bool) string {
-	if isDir {
-		return ""
-	}
-
+func searchFile(s string, f string) string {
 	file, err := os.Open(f)
 
 	if err != nil {
-		//panic(1)
 		return ""
 	}
 

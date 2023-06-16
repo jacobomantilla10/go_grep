@@ -1,13 +1,28 @@
 package main
 
 import (
-	"os"
+	"flag"
+	"fmt"
+)
+
+var rFlag = flag.Bool(
+	"r",
+	false,
+	"Use -r in order to search in current directory and all subdirectories",
 )
 
 func main() {
-	text := os.Args[1]
-	fileName := os.Args[2]
+	flag.Parse()
 
-	search(text, fileName)
+	args := flag.Args()
+	pattern := args[0]
+	//fileName := args[1]
 
+	if *rFlag {
+		directory := args[1]
+		searchRecursively(pattern, directory)
+	} else {
+		fileName := args[1]
+		fmt.Println(searchFile(pattern, fileName))
+	}
 }
