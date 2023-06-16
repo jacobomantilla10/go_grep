@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: go_grep
+  description: Building a grep utility using Golang in order to get a better understanding of the language.
+  tags:
+    - go
+    - website
+spec:
+  type: service
+  lifecycle: production
+  owner: golang_team
